@@ -45,18 +45,11 @@ struct CardModifier: ViewModifier {
             }
     }
 
-    @ViewBuilder
-    private func surface(content: Content, shape: RoundedRectangle) -> some View {
-        if #available(iOS 26.0, *), liquidGlass {
-            content
-                .padding(padding)
-                .glassEffect(.regular, in: shape)
-        } else {
-            content
-                .padding(padding)
-                .background(.ultraThinMaterial, in: shape)
-        }
-    }
+  @ViewBuilder
+private func surface(content: Content, shape: RoundedRectangle) -> some View {
+    content
+        .padding(padding)
+        .background(.ultraThinMaterial, in: shape)
 }
 
 extension View {
@@ -73,15 +66,14 @@ private struct GlassBarModifier: ViewModifier {
     @Environment(\.liquidGlassEnabled) private var liquidGlass
 
     @ViewBuilder
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *), liquidGlass {
-            content.glassEffect(.regular, in: Capsule())
-        } else {
-            content
-                .background(.ultraThinMaterial, in: Capsule())
-                .overlay(Capsule().strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.5))
-        }
-    }
+func body(content: Content) -> some View {
+    content
+        .background(.ultraThinMaterial, in: Capsule())
+        .overlay(
+            Capsule()
+                .strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.5)
+        )
+}
 }
 
 struct LiveBadge: View {
