@@ -3,10 +3,16 @@ import SwiftUI
 extension Color {
     static var tgAccent: Color { AccentChoice.current.color }
 
-    static let tgConnected = Color(red: 0.18, green: 0.78, blue: 0.44)
+    static let tgConnected = Color(
+        red: 0.18,
+        green: 0.78,
+        blue: 0.44
+    )
 }
 
-private struct LiquidGlassKey: EnvironmentKey { static let defaultValue = true }
+private struct LiquidGlassKey: EnvironmentKey {
+    static let defaultValue = true
+}
 
 extension EnvironmentValues {
     var liquidGlassEnabled: Bool {
@@ -21,12 +27,19 @@ struct AppBackground: View {
     var body: some View {
         ZStack {
             Color(.systemGroupedBackground)
+
             Circle()
-                .fill((active ? Color.tgConnected : Color.tgAccent).opacity(0.16))
+                .fill(
+                    (active ? Color.tgConnected : Color.tgAccent)
+                        .opacity(0.16)
+                )
                 .frame(width: 320, height: 320)
                 .blur(radius: 120)
                 .offset(x: 0, y: -360)
-                .animation(.easeInOut(duration: 0.6), value: active)
+                .animation(
+                    .easeInOut(duration: 0.6),
+                    value: active
+                )
         }
         .ignoresSafeArea()
     }
@@ -34,27 +47,50 @@ struct AppBackground: View {
 
 struct CardModifier: ViewModifier {
     @Environment(\.liquidGlassEnabled) private var liquidGlass
+
     var padding: CGFloat = 16
     var cornerRadius: CGFloat = 20
 
     func body(content: Content) -> some View {
-        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        let shape = RoundedRectangle(
+            cornerRadius: cornerRadius,
+            style: .continuous
+        )
+
         return surface(content: content, shape: shape)
             .overlay {
-                shape.strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.5)
+                shape.strokeBorder(
+                    Color.primary.opacity(0.06),
+                    lineWidth: 0.5
+                )
             }
     }
 
-  @ViewBuilder
-private func surface(content: Content, shape: RoundedRectangle) -> some View {
-    content
-        .padding(padding)
-        .background(.ultraThinMaterial, in: shape)
+    @ViewBuilder
+    private func surface(
+        content: Content,
+        shape: RoundedRectangle
+    ) -> some View {
+        content
+            .padding(padding)
+            .background(
+                .ultraThinMaterial,
+                in: shape
+            )
+    }
 }
 
 extension View {
-    func card(padding: CGFloat = 16, cornerRadius: CGFloat = 20) -> some View {
-        modifier(CardModifier(padding: padding, cornerRadius: cornerRadius))
+    func card(
+        padding: CGFloat = 16,
+        cornerRadius: CGFloat = 20
+    ) -> some View {
+        modifier(
+            CardModifier(
+                padding: padding,
+                cornerRadius: cornerRadius
+            )
+        )
     }
 
     func glassBar() -> some View {
@@ -66,14 +102,20 @@ private struct GlassBarModifier: ViewModifier {
     @Environment(\.liquidGlassEnabled) private var liquidGlass
 
     @ViewBuilder
-func body(content: Content) -> some View {
-    content
-        .background(.ultraThinMaterial, in: Capsule())
-        .overlay(
-            Capsule()
-                .strokeBorder(Color.primary.opacity(0.06), lineWidth: 0.5)
-        )
-}
+    func body(content: Content) -> some View {
+        content
+            .background(
+                .ultraThinMaterial,
+                in: Capsule()
+            )
+            .overlay(
+                Capsule()
+                    .strokeBorder(
+                        Color.primary.opacity(0.06),
+                        lineWidth: 0.5
+                    )
+            )
+    }
 }
 
 struct LiveBadge: View {
@@ -87,10 +129,12 @@ struct LiveBadge: View {
                     .frame(width: 16, height: 16)
                     .scaleEffect(pulse ? 1.6 : 0.8)
                     .opacity(pulse ? 0 : 1)
+
                 Circle()
                     .fill(Color.tgConnected)
                     .frame(width: 8, height: 8)
             }
+
             Text(verbatim: "В сети".tgLoc)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(Color.tgConnected)
@@ -99,7 +143,10 @@ struct LiveBadge: View {
         .padding(.vertical, 5)
         .glassBar()
         .onAppear {
-            withAnimation(.easeOut(duration: 1.1).repeatForever(autoreverses: false)) {
+            withAnimation(
+                .easeOut(duration: 1.1)
+                    .repeatForever(autoreverses: false)
+            ) {
                 pulse = true
             }
         }
@@ -120,9 +167,12 @@ struct InfoRow: View {
                     .foregroundStyle(Color.tgAccent)
                     .frame(width: 22)
             }
+
             Text(verbatim: title.tgLoc)
                 .foregroundStyle(.primary)
+
             Spacer(minLength: 12)
+
             Text(value)
                 .foregroundStyle(valueColor)
                 .multilineTextAlignment(.trailing)
