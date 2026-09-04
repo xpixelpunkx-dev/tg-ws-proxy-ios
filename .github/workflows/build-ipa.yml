@@ -1,0 +1,35 @@
+name: Build TgWsProxy IPA
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios,aarch64-apple-ios-sim,x86_64-apple-ios
+
+      - name: Make scripts executable
+        run: |
+          chmod +x build.sh
+          chmod +x scripts/*.sh
+
+      - name: Build IPA
+        run: |
+          ./build.sh -p side -c none
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: TgWsProxy-iPhone-IPA
+          path: dist/*.ipa
+          if-no-files-found: error
